@@ -1,0 +1,11 @@
+.game-cell {
+    width: 35px;
+    height: 35px;
+    background-color: #86989B;
+    display: inline-block;
+    border: #A5D6D9 .25px solid;
+}
+
+.cell-row {
+    display: flex;
+}
