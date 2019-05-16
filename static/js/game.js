@@ -19,7 +19,7 @@ const three = [
 const playingFigure = {
     pos: {x:0, y:3},
     figure: one,
-    status: 'active'
+    status: 'active',
 };
 
 function makeBoard(){
@@ -97,6 +97,14 @@ function coloringCells(board){
 }
 
 
+Array.prototype.random = function () {
+  return this[Math.floor((Math.random()*this.length))];
+}
+
+let randomMatrix = [1, 54, 2].random();
+console.log(randomMatrix);
+console.log('kiscica');
+
 function addFigureToBoard(board, figure, offset) {
 
     for (let r = 0; r < figure.length; r++) {
@@ -104,13 +112,15 @@ function addFigureToBoard(board, figure, offset) {
             if (figure[r][c] !== 0) {
                 board[r + offset.x][c + offset.y] = figure[r][c];
                 if (offset.x === 18) {
-                    if (figure === one) {
+                    /*if (figure === one) {
                         playingFigure.figure = two;
                     } else if (figure === two) {
                         playingFigure.figure = three;
                     } else if (figure === three) {
                         playingFigure.figure = one;
-                    }
+                    }*/
+                    playingFigure.figure = [one, one, two, three, three].random();
+                    console.log(playingFigure.figure);
                     playingFigure.pos.x = 0;
                     playingFigure.pos.y = 3;
                 }
@@ -146,27 +156,49 @@ function update(){
         playingFigure.pos.x++;
         dropStart = Date.now();
     }
-    document.addEventListener('keydown', moveToSide);
     requestAnimationFrame(update);
 }
 
 
+document.addEventListener('keydown', movementOnBoard);
+
 update();
 
 
-function moveToSide(){
+function movementOnBoard(event){
     if (event.which === 39){
         playingFigure.pos.y++;
     } else if (event.which === 37) {
         playingFigure.pos.y--;
     } else if (event.which === 40) {
          playingFigure.pos.x++;
+    } else if (event.which === 32) {
+        playingFigure.figure = rotation(playingFigure.figure, 'clockwise');
     }
+
 }
 
 
 
-//document.addEventListener('keydown', moveToSide);
+function rotation(matrix, direction) {
+    let result = [],
+        n = matrix.length,
+        m = matrix[0].length,
+        i, j, row;
+
+    for (i = 0; i < m; ++i) {
+        row = [];
+        for (j = 0; j < n; ++j) {
+            row.push(direction === 'clockwise' ? matrix[n - j - 1][i] : matrix[j][m - i - 1]);
+        }
+        result.push(row);
+    }
+    return result;
+}
+
+
+
+//document.addEventListener('keydown', movementOnBoard);
 /*document.addEventListener("keydown", function(event) {
     if (event.keyCode === 37){
         //left

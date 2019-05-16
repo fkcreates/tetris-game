@@ -9,6 +9,7 @@
     <script src="{{ url_for ('static', filename='js/game.js') }}" defer></script>
 </head>
 <body>
+
 <div id="game-board" data-row-num="{{ row_num }}" data-col-num="{{ col_num }}">
     {% for row in range(row_num) %}
         <div class="cell-row">
