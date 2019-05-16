@@ -9,3 +9,15 @@
 .cell-row {
     display: flex;
 }
+
+#game-board {
+    height: 10em;
+    position: relative }
+#game-board {
+    margin: 0;
+    background: yellow;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) }

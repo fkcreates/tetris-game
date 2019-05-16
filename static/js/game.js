@@ -10,13 +10,17 @@ const two = [
     [0,2,0],
 ];
 
-let figures = [one, two];
+const three = [
+    [0,3,0],
+    [0,3,3],
+    [0,0,3],
+]
 
 
 const playingFigure = {
     pos: {x:0, y:3},
     figure: one,
-    status: 'active'
+    status: 'active',
 };
 
 function makeBoard(){
@@ -84,6 +88,8 @@ function coloringCells(board){
                 colorChooseForCell(r, c, "red");
             } else if(board[r][c] === 2) {
                 colorChooseForCell(r, c, "blue");
+            } else if(board[r][c] === 3) {
+                colorChooseForCell(r, c, "green");
             }
             setStatus(r,c);
         }
@@ -91,18 +97,32 @@ function coloringCells(board){
 }
 
 
-function addFigureToBoard(board, figure, offset){
+Array.prototype.random = function () {
+  return this[Math.floor((Math.random()*this.length))];
+}
+
+let randomMatrix = [1, 54, 2].random();
+console.log(randomMatrix);
+console.log('kiscica');
+
+function addFigureToBoard(board, figure, offset) {
 
     for (let r = 0; r < figure.length; r++) {
         for (let c = 0; c < figure.length; c++) {
             if (figure[r][c] !== 0) {
                 board[r + offset.x][c + offset.y] = figure[r][c];
-                if (playingFigure.status === 'fixed') {
-                    if (playingFigure.figure === one) {
+
+                if (offset.x === 18) {
+                    /*if (figure === one) {
                         playingFigure.figure = two;
-                    } else if (playingFigure.figure === two){
+                    } else if (figure === two) {
+                        playingFigure.figure = three;
+                    } else if (figure === three) {
                         playingFigure.figure = one;
-                    }
+                    }*/
+                    playingFigure.figure = [one, two, three].random();
+                    console.log(playingFigure.figure);
+
                     playingFigure.pos.x = 0;
                     playingFigure.pos.y = 3;
                 }
@@ -114,7 +134,6 @@ function addFigureToBoard(board, figure, offset){
 
 function draw(){
     let gameBoard = makeBoard();
-    //let playingFigure = chooseNewFigure();
     addFigureToBoard(gameBoard, playingFigure.figure, playingFigure.pos);
     coloringCells(gameBoard);
 }
@@ -137,6 +156,7 @@ function update(){
     }
     requestAnimationFrame(update);
 }
+
 
 
 function moveDown(gameBoard) {
@@ -165,7 +185,10 @@ function collisionDetection(board, figure, offset) {
     return false;
 }
 
-document.addEventListener('keydown', moveToSide);
+document.addEventListener('keydown', movementOnBoard);
+
+update();
+
 
 function setStatusToFixed(board) {
     for (let i = 0; i < board.length; i++) {
@@ -178,18 +201,51 @@ function setStatusToFixed(board) {
     }
 }
 
-function moveToSide(){
+function movementOnBoard(event){
     if (event.which === 39){
         playingFigure.pos.y++;
     } else if (event.which === 37) {
         playingFigure.pos.y--;
-    } else if (event.which === 40){
-        playingFigure.pos.x++;
+    } else if (event.which === 40) {
+         playingFigure.pos.x++;
+    } else if (event.which === 32) {
+        playingFigure.figure = rotation(playingFigure.figure, 'clockwise');
     }
+
+}
+
+
+
+function rotation(matrix, direction) {
+    let result = [],
+        n = matrix.length,
+        m = matrix[0].length,
+        i, j, row;
+
+    for (i = 0; i < m; ++i) {
+        row = [];
+        for (j = 0; j < n; ++j) {
+            row.push(direction === 'clockwise' ? matrix[n - j - 1][i] : matrix[j][m - i - 1]);
+        }
+        result.push(row);
+
+    }
+    return result;
 }
 
 let gameBoard = makeBoard();
 
 
-update();
+
+//document.addEventListener('keydown', movementOnBoard);
+/*document.addEventListener("keydown", function(event) {
+    if (event.keyCode === 37){
+        //left
+    } else if( event.keyCode === 39){
+        //right
+    }
+});
+*/
+
+
 
