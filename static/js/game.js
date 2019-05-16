@@ -68,7 +68,7 @@ function colorChooseForCell(x, y, color){
 function setStatus(x, y) {
     let actualCell = getCellByCoordinate(x, y);
     console.log(actualCell);
-    if (actualCell.style.backgroundColor != "white") {
+    if (actualCell.style.backgroundColor !== "white") {
         actualCell.dataset.status = 'active';
     } else {
         actualCell.dataset.status = 'empty';
