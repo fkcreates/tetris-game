@@ -46,7 +46,7 @@ function checkGameOver(gameBoard){
             if (gameBoard[col][row] === 1) {
                 counter += 1;
                 if (counter === checkedRows) {
-                    alert("Game Over!")
+                    alert("Game Over!");
                     return 0;
                 }
             }
@@ -64,13 +64,12 @@ function getCellByCoordinate(x, y) {
 function colorChooseForCell(x, y, color){
     let actualCell = getCellByCoordinate(x, y);
     actualCell.style.backgroundColor = color;
-    //actualCell.dataset.status = 'active';
 }
 
 
 function setStatus(x, y) {
     let actualCell = getCellByCoordinate(x, y);
-    if (actualCell.style.backgroundColor != "white" && actualCell.dataset.status === 'fix') {
+    if (actualCell.style.backgroundColor !== "white" && actualCell.dataset.status !== "fixed") {
         actualCell.dataset.status = 'active';
     } else {
         actualCell.dataset.status = 'empty';
@@ -98,15 +97,14 @@ function addFigureToBoard(board, figure, offset){
         for (let c = 0; c < figure.length; c++) {
             if (figure[r][c] !== 0) {
                 board[r + offset.x][c + offset.y] = figure[r][c];
-                if (playingFigure.pos.x === 18) {
-                    playingFigure.status = 'fix';
-                    playingFigure.pos.x = 0;
-                    playingFigure.pos.y = 3;
+                if (playingFigure.status === 'fixed') {
                     if (playingFigure.figure === one) {
                         playingFigure.figure = two;
                     } else if (playingFigure.figure === two){
                         playingFigure.figure = one;
                     }
+                    playingFigure.pos.x = 0;
+                    playingFigure.pos.y = 3;
                 }
             }
         }
@@ -125,10 +123,6 @@ function draw(){
 function main(){
     let gameBoard = makeBoard();
     coloringCells(gameBoard);
-
-
-    //checkGameOver(gameBoard);
-    //coloringFigures();
 }
 
 
@@ -138,17 +132,51 @@ function update(){
     let now = Date.now();
     let delta = now - dropStart;
     if(delta > 500){
-        playingFigure.pos.x++;
+        moveDown(gameBoard);
         dropStart = Date.now();
     }
     requestAnimationFrame(update);
 }
 
 
-update();
+function moveDown(gameBoard) {
+    playingFigure.pos.x++;
+    if (collisionDetection(gameBoard, playingFigure.figure, playingFigure.pos)) {
+        playingFigure.pos.x--;
+        setStatusToFixed(gameBoard);
+        console.log('collided');
+    }
+}
+
+
+function collisionDetection(board, figure, offset) {
+    for (let i = 0; i < figure.length; i++) {
+        for (let j = 0; j < figure.length; j++) {
+            if (figure[i][j] !== 0) {
+                if (i+offset.x >= 20){
+                    return true
+                }
+                if (board[i+offset.x][j+offset.y] !== 0) {
+                    return true
+                }
+            }
+        }
+    }
+    return false;
+}
 
 document.addEventListener('keydown', moveToSide);
 
+function setStatusToFixed(board) {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            let actualCell = getCellByCoordinate(i, j);
+            if (actualCell.status === "active") {
+                actualCell.status = "fixed"
+            }
+        }
+    }
+}
 
 function moveToSide(){
     if (event.which === 39){
@@ -160,30 +188,8 @@ function moveToSide(){
     }
 }
 
-
-function chooseNewFigure() {
-    if (checkBoardForActiveCells()) {
-        playingFigure.figure = two;
-    }
-    return playingFigure;
-}
+let gameBoard = makeBoard();
 
 
-function checkBoardForActiveCells() {
-    let gameCells = document.getElementsByClassName('game-cell');
+update();
 
-    let counter = 0;
-    for (let gameCell of gameCells) {
-        if (gameCell.dataset.status != 'active') {
-            counter += 1;
-        } else {
-            continue;
-        }
-
-    }
-    if (playingFigure.pos.x > 19) {
-        return true;
-    } else {
-        return false;
-    }
-}
