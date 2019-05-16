@@ -1,7 +1,7 @@
 .game-cell {
     width: 35px;
     height: 35px;
-    background-color: #86989B;
+    background-color: rgb(244, 243, 255);
     display: inline-block;
     border: #A5D6D9 .25px solid;
 }
