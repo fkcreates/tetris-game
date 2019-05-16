@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tetris by yesbutno</title>
+    <script src="{{ url_for ('static', filename='js/game.js') }}" defer></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename="css/style.css") }}">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    {% block content  %}{%  endblock %}
+</body>
+</html>
