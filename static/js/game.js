@@ -4,9 +4,16 @@ const one = [
     [0,1,0],
 ];
 
+const two = [
+    [0,2,2],
+    [0,2,0],
+    [0,2,0],
+];
+
 const playingFigure = {
     pos: {x:0, y:3},
     figure: one,
+    status: 'active'
 };
 
 function makeBoard(){
@@ -18,8 +25,11 @@ function makeBoard(){
         board[r] = [];
         for (let c = 0; c < COL; c++) {
             board[r][c] = 0;
+            colorChooseForCell(r, c, "white");
+            setStatus(r,c);
         }
     }
+
     return board
 }
 
@@ -44,24 +54,37 @@ function checkGameOver(gameBoard){
 
 
 function getCellByCoordinate(x, y) {
-    return document.querySelector(`.game-cell[data-coordinate-x="${x}"][data-coordinate-y="${y}"]`)
+    return document.querySelector(`.game-cell[data-coordinate-x="${y}"][data-coordinate-y="${x}"]`)
 }
 
 
-function colorChooseForCell(i, j, color){
-    let actualCell = getCellByCoordinate(i, j);
+function colorChooseForCell(x, y, color){
+    let actualCell = getCellByCoordinate(x, y);
     actualCell.style.backgroundColor = color;
+    //actualCell.dataset.status = 'active';
+}
+
+
+function setStatus(x, y) {
+    let actualCell = getCellByCoordinate(x, y);
+    console.log(actualCell);
+    if (actualCell.style.backgroundColor != "white") {
+        actualCell.dataset.status = 'active';
+    } else {
+        actualCell.dataset.status = 'empty';
+    }
 }
 
 
 function coloringCells(board){
     for (let r = 0; r < 20; r++) {
         for (let c = 0; c < 10; c++) {
-            if (board[c][r] === 1) {
+            if(board[r][c] === 1){
                 colorChooseForCell(r, c, "red");
-            }else if(board[c][r] === 2){
+            } else if(board[r][c] === 2) {
                 colorChooseForCell(r, c, "blue");
             }
+            setStatus(r,c);
         }
     }
 }
@@ -69,10 +92,10 @@ function coloringCells(board){
 
 function addFigureToBoard(board, figure, offset){
 
-    for (let i = 0; i < figure.length; i++) {
-        for (let j = 0; j < figure.length; j++) {
-            if (figure[i][j] !== 0) {
-                board[i+offset.x][j+offset.y] = figure[i][j];
+    for (let r = 0; r < figure.length; r++) {
+        for (let c = 0; c < figure.length; c++) {
+            if (figure[r][c] !== 0) {
+                board[r + offset.x][c + offset.y] = figure[r][c];
             }
         }
     }
@@ -83,7 +106,6 @@ function draw(){
     let gameBoard = makeBoard();
     addFigureToBoard(gameBoard, playingFigure.figure, playingFigure.pos);
     coloringCells(gameBoard);
-
 }
 
 
@@ -102,8 +124,7 @@ function update(){
     draw();
     let now = Date.now();
     let delta = now - dropStart;
-    console.log(delta);
-    if(delta > 1000){
+    if(delta > 500){
         playingFigure.pos.x++;
         dropStart = Date.now();
     }
@@ -118,18 +139,13 @@ update();
 
 
 
-
-
-
-
-
-
-
 /*document.addEventListener("keydown", function(event) {
     if (event.keyCode === 37){
         //left
     } else if( event.keyCode === 39){
         //right
     }
-});*/
->>>>>>> master
+});
+*/
+
+

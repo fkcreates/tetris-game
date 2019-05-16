@@ -12,7 +12,7 @@ def index():
 def game():
 
     return render_template('game.html',
-                           row_num= 18,
+                           row_num= 20,
                            col_num = 10)
 
 
