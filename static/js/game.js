@@ -10,6 +10,9 @@ const two = [
     [0,2,0],
 ];
 
+let figures = [one, two];
+
+
 const playingFigure = {
     pos: {x:0, y:3},
     figure: one,
@@ -67,7 +70,7 @@ function colorChooseForCell(x, y, color){
 
 function setStatus(x, y) {
     let actualCell = getCellByCoordinate(x, y);
-    if (actualCell.style.backgroundColor != "white") {
+    if (actualCell.style.backgroundColor != "white" && actualCell.dataset.status === 'fix') {
         actualCell.dataset.status = 'active';
     } else {
         actualCell.dataset.status = 'empty';
@@ -95,6 +98,16 @@ function addFigureToBoard(board, figure, offset){
         for (let c = 0; c < figure.length; c++) {
             if (figure[r][c] !== 0) {
                 board[r + offset.x][c + offset.y] = figure[r][c];
+                if (playingFigure.pos.x === 18) {
+                    playingFigure.status = 'fix';
+                    playingFigure.pos.x = 0;
+                    playingFigure.pos.y = 3;
+                    if (playingFigure.figure === one) {
+                        playingFigure.figure = two;
+                    } else if (playingFigure.figure === two){
+                        playingFigure.figure = one;
+                    }
+                }
             }
         }
     }
@@ -103,6 +116,7 @@ function addFigureToBoard(board, figure, offset){
 
 function draw(){
     let gameBoard = makeBoard();
+    //let playingFigure = chooseNewFigure();
     addFigureToBoard(gameBoard, playingFigure.figure, playingFigure.pos);
     coloringCells(gameBoard);
 }
@@ -127,12 +141,13 @@ function update(){
         playingFigure.pos.x++;
         dropStart = Date.now();
     }
-    document.addEventListener('keydown', moveToSide);
     requestAnimationFrame(update);
 }
 
 
 update();
+
+document.addEventListener('keydown', moveToSide);
 
 
 function moveToSide(){
@@ -140,21 +155,35 @@ function moveToSide(){
         playingFigure.pos.y++;
     } else if (event.which === 37) {
         playingFigure.pos.y--;
-    } else if (event.which === 40) {
-         playingFigure.pos.x++;
+    } else if (event.which === 40){
+        playingFigure.pos.x++;
     }
 }
 
 
-
-//document.addEventListener('keydown', moveToSide);
-/*document.addEventListener("keydown", function(event) {
-    if (event.keyCode === 37){
-        //left
-    } else if( event.keyCode === 39){
-        //right
+function chooseNewFigure() {
+    if (checkBoardForActiveCells()) {
+        playingFigure.figure = two;
     }
-});
-*/
+    return playingFigure;
+}
 
 
+function checkBoardForActiveCells() {
+    let gameCells = document.getElementsByClassName('game-cell');
+
+    let counter = 0;
+    for (let gameCell of gameCells) {
+        if (gameCell.dataset.status != 'active') {
+            counter += 1;
+        } else {
+            continue;
+        }
+
+    }
+    if (playingFigure.pos.x > 19) {
+        return true;
+    } else {
+        return false;
+    }
+}
