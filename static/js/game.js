@@ -10,6 +10,12 @@ const two = [
     [0,2,0],
 ];
 
+const three = [
+    [0,3,0],
+    [0,3,3],
+    [0,0,3],
+]
+
 const playingFigure = {
     pos: {x:0, y:3},
     figure: one,
@@ -82,6 +88,8 @@ function coloringCells(board){
                 colorChooseForCell(r, c, "red");
             } else if(board[r][c] === 2) {
                 colorChooseForCell(r, c, "blue");
+            } else if(board[r][c] === 3) {
+                colorChooseForCell(r, c, "green");
             }
             setStatus(r,c);
         }
@@ -89,12 +97,23 @@ function coloringCells(board){
 }
 
 
-function addFigureToBoard(board, figure, offset){
+function addFigureToBoard(board, figure, offset) {
 
     for (let r = 0; r < figure.length; r++) {
         for (let c = 0; c < figure.length; c++) {
             if (figure[r][c] !== 0) {
                 board[r + offset.x][c + offset.y] = figure[r][c];
+                if (offset.x === 18) {
+                    if (figure === one) {
+                        playingFigure.figure = two;
+                    } else if (figure === two) {
+                        playingFigure.figure = three;
+                    } else if (figure === three) {
+                        playingFigure.figure = one;
+                    }
+                    playingFigure.pos.x = 0;
+                    playingFigure.pos.y = 3;
+                }
             }
         }
     }
