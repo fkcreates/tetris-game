@@ -67,7 +67,6 @@ function colorChooseForCell(x, y, color){
 
 function setStatus(x, y) {
     let actualCell = getCellByCoordinate(x, y);
-    console.log(actualCell);
     if (actualCell.style.backgroundColor != "white") {
         actualCell.dataset.status = 'active';
     } else {
@@ -128,6 +127,7 @@ function update(){
         playingFigure.pos.x++;
         dropStart = Date.now();
     }
+    document.addEventListener('keydown', moveToSide);
     requestAnimationFrame(update);
 }
 
@@ -135,10 +135,19 @@ function update(){
 update();
 
 
+function moveToSide(){
+    if (event.which === 39){
+        playingFigure.pos.y++;
+    } else if (event.which === 37) {
+        playingFigure.pos.y--;
+    } else if (event.which === 40) {
+         playingFigure.pos.x++;
+    }
+}
 
 
 
-
+//document.addEventListener('keydown', moveToSide);
 /*document.addEventListener("keydown", function(event) {
     if (event.keyCode === 37){
         //left
